@@ -1268,5 +1268,244 @@ Da página do **Gerenciador Virtual do Host**, você pode também adicionar novo
 
 
 
+## Clickhouse(SGDB)
+
+## 1. Download the binary (istalação para testes)
+
+ClickHouse runs natively on Linux, FreeBSD and macOS, and runs on Windows via the [WSL](https://learn.microsoft.com/en-us/windows/wsl/about). The simplest way to download ClickHouse locally is to run the following `curl` command. It determines if your operating system is supported, then downloads an appropriate ClickHouse binary:
+
+```bash
+curl https://clickhouse.com/ | sh
+```
 
 
+
+## 2. Start the server
+
+Run the following command to start the ClickHouse server:
+
+```bash
+./clickhouse server
+```
+
+
+
+## 3. Start the client
+
+Use the `clickhouse-client` to connect to your ClickHouse service. Open a new Terminal, change directories to where your `clickhouse` binary is saved, and run the following command:
+
+```bash
+./clickhouse client
+```
+
+
+
+You should see a smiling face as it connects to your service running on localhost:
+
+```response
+my-host :)
+```
+
+
+
+## 4. Effective installation
+
+```bash
+sudo ./clickhouse install
+```
+
+
+
+# Como encontrar o PID de um processo que está usando uma porta no Linux?
+
+
+
+## 1. Download the bi
+
+
+
+### 1. Como listar processos e portas com o **SS?**
+
+O comando `**ss**` é a [alternativa moderna](https://200ok.com.br/alternativas-modernas-para-comandos-antigos-do-linux/) para nosso querido **`netstat`** . O funcionamento e parâmetros são muito parecidos, inclusive, utilizamos o mesmo  **`-tlunp`** para obter as portas, PIDs e nomes dos processos.
+
+Você pode utilizar o  **`ss`** de duas maneiras, ou filtrando via `**| grep ":PORTA"**` assim como fizemos no netstat ou então usando o próprio parâmetro de **`sport`** do ss. Eu fiz os dois exemplos de uso. Pessoalmente prefico usar o grep sempre.
+
+```
+# Comando ss utilizando o filtro source port
+sudo ss -tlunp 'sport = :80'
+
+# Output
+Netid             State              Recv-Q              Send-Q                           Local Address:Port                           Peer Address:Port             Process                                                                                                                                                              
+tcp               LISTEN             0                   511                                    0.0.0.0:80                                  0.0.0.0:*                 users:(("nginx",pid=560,fd=8),("nginx",pid=559,fd=8),("nginx",pid=558,fd=8),("nginx",pid=557,fd=8),("nginx",pid=556,fd=8))                                          
+tcp               LISTEN             0                   511                                       [::]:80                                     [::]:*                 users:(("nginx",pid=560,fd=9),("nginx",pid=559,fd=9),("nginx",pid=558,fd=9),("nginx",pid=557,fd=9),("nginx",pid=556,fd=9))   
+
+
+# Comando ss utilizando filtro pelo | grep
+sudo ss -tlunp | grep :80
+
+# Output
+tcp   LISTEN 0      511          0.0.0.0:80         0.0.0.0:*    users:(("nginx",pid=560,fd=8),("nginx",pid=559,fd=8),("nginx",pid=558,fd=8),("nginx",pid=557,fd=8),("nginx",pid=556,fd=8))
+tcp   LISTEN 0      511             [::]:80            [::]:*    users:(("nginx",pid=560,fd=9),("nginx",pid=559,fd=9),("nginx",pid=558,fd=9),("nginx",pid=557,fd=9),("nginx",pid=556,fd=9))
+```
+
+O comando **netstat** foi descontinuado e não deve ser usado, usaremos então o comando **ss**.
+
+```
+sudo ss -tulwn | grep LISTEN
+```
+
+As opções usadas são:
+
+- -t Mostra apenas conexões TCP
+- -u Exibe apenas conexões UDP
+- -l Mostra conexões de escuta (por exemplo, a porta 22 aberta pelo servidor SSHD)
+- -p Lista o nome do processo que abriu a conexão
+- -n Não resolve nomes de serviço
+
+Se você visualiza uma porta, mas não sabe a qual serviço ela pertence. Consulte esta lista:
+
+```
+less /etc/services
+```
+
+### 2. Como listar processos e portas com o LSOF**?**
+
+O comando `**lsof**` também é outro muito comum e muito utilizado por administradores Linux. Temos um artigo que fala somente sobre arquivos abertos no Linux.
+
+O uso `**lsof**` é muito simples e, para o buscar uma porta aberta com ele, basta utilizar o parâmetro `**-i :PORTA**` que ele irá listar os PIDs, processos e portas de uma forma até mais completa que o próprio ss e netstat.
+
+```
+# Comando lsof com o filtro de porta -i
+sudo lsof -i :80
+
+# Output
+COMMAND PID     USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+nginx   556     root    8u  IPv4    909      0t0  TCP *:http (LISTEN)
+nginx   556     root    9u  IPv6    910      0t0  TCP *:http (LISTEN)
+nginx   557 www-data    8u  IPv4    909      0t0  TCP *:http (LISTEN)
+nginx   557 www-data    9u  IPv6    910      0t0  TCP *:http (LISTEN)
+nginx   558 www-data    8u  IPv4    909      0t0  TCP *:http (LISTEN)
+nginx   558 www-data    9u  IPv6    910      0t0  TCP *:http (LISTEN)
+nginx   559 www-data    8u  IPv4    909      0t0  TCP *:http (LISTEN)
+nginx   559 www-data    9u  IPv6    910      0t0  TCP *:http (LISTEN)
+nginx   560 www-data    8u  IPv4    909      0t0  TCP *:http (LISTEN)
+nginx   560 www-data    9u  IPv6    910      0t0  TCP *:http (LISTEN)
+```
+
+
+
+### 3. Como listar processos e portas com o FUSER**?**
+
+Das 3 opções anteriores, é possível que o comando **`fuser`** seja o menos comum de todos. Ele serve para exibir informações de processos e os usos de arquivos. Se você quiser APENAS o PID dos processos de uma determinada porta, sem dúvidas o **`fuser`** é a escolha certa.
+
+O uso `**fuser**` é também muito simples e, para o buscar uma porta aberta com ele, basta utilizar o parâmetro `**-v PORTA/PROTOCOLO**` que ele irá listar os PIDs, processos e portas. O parâmetro -v é um verbose para retornar mais informações. Você pode também utilizar direto buscando a porta.
+
+```
+# Comando fuser com verbose e filtro de porta
+sudo fuser -v 80/tcp
+
+# Output
+                     USER        PID ACCESS COMMAND
+80/tcp:              root        556 F.... nginx
+                     www-data    557 F.... nginx
+                     www-data    558 F.... nginx
+                     www-data    559 F.... nginx
+                     www-data    560 F.... nginx
+                     
+                     
+# Comando fuser de maneira super simplificada, APENAS PIDs
+sudo fuser 80/tcp
+
+# Output
+80/tcp:                556   557   558   559   560
+```
+
+
+
+## Instalar SSH
+
+
+
+## Step 1: Prepare Ubuntu
+
+The first thing you need to do before you start installing SSH on Ubuntu is to update all `apt` packages to the latest versions. To do this, use the following command:
+
+```
+sudo apt update && sudo apt upgrade
+```
+
+## Step 2: Install SSH on Ubuntu
+
+OpenSSH is not pre-installed on the system, so let's install it manually. To do this, type in the terminal:
+
+```
+sudo apt install openssh-server
+```
+
+The installation of all the necessary components will begin. Answer "Yes" to all the system prompts. 
+
+After the installation is complete, go to the next step to start the service.
+
+## Step 3: Start SSH
+
+Now you need to enable the service you just installed using the command below:
+
+```
+sudo systemctl enable --now ssh
+```
+
+On successful startup, you will see the following system message.
+
+The `--now` key helps you launch the service and simultaneously set it to start when the system boots.
+
+To verify that the service is enabled and running successfully, type:
+
+```
+sudo systemctl status ssh
+```
+
+The output should contain the `Active: active (running)` line, which indicates that the service is successfully running.
+
+If you want to disable the service, execute: 
+
+```
+sudo systemctl disable ssh
+```
+
+It disables the service and prevents it from starting at boot.
+
+## Step 4: Configure the firewall
+
+Before connecting to the server via SSH, check the firewall to ensure it is configured correctly.
+
+In our case, we have the UFW installed, so we will use the following command:
+
+```
+sudo ufw status
+```
+
+In the output, you should see that SSH traffic is allowed. If you don't have it listed, you need to allow incoming SSH connections. This command will help with this:
+
+```
+sudo ufw allow ssh
+```
+
+## Step 5: Connect to the server
+
+Once you complete all the previous steps, you can log into the server using the SSH protocol.
+
+To do this, you will need the server's IP address or domain name and the name of a user created on the server.
+
+In the terminal line, enter the command:
+
+```
+ssh username@IP_address
+```
+
+Or: 
+
+```
+ssh username@domain
+```
+
+> Important: To successfully connect to a remote server, SSH must be installed and configured on the remote server and the user's computer from which you make the connection. 

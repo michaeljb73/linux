@@ -6,8 +6,6 @@ Reviewed by **[Md. Ashakul Islam Sowad](https://linuxsimply.com/author/sowad/)**
 
 Last updated: Apr 18, 2024
 
-Online_bash_shell: https://www.onlinegdb.com/online_bash_shell 
-
 A shell script in Linux is a text file containing a sequence of commands written in a scripting language interpreted by the shell. The shell acts as an interface between the user and the operating system, interpreting commands entered by the user or read from a script file. The **GNU Bourne-Again Shell** also known as **bash** is the default shell for most of the **Linux** distributions. It commonly runs in its interactive form which is the **Command Line Interface (CLI).**
 
 In this article, you will find 100 shell script examples along with a basic understanding of **Shell Scripting**.
@@ -226,9 +224,7 @@ echo "The division is: $div
 The division is: 6
 ```
 
-Bash
 
-Copy
 
 ### 10. Calculating the Remainder of a Division
 
@@ -244,9 +240,7 @@ mod=$(($num1%$num2))
 echo "The remainder is: $mod"
 ```
 
-Bash
 
-Copy
 
 **Output:**
 
@@ -254,9 +248,7 @@ Copy
 The remainder is: 10
 ```
 
-Bash
 
-Copy
 
 ### 11. Generate a Random Number Using Bash Script
 
@@ -268,9 +260,7 @@ To generate a random number in bash, use the `RANDOM` function enclosed with `$(
 echo $((RANDOM))
 ```
 
-Bash
 
-Copy
 
 ### 12. Generating a Random Number Between Two Given Numbers
 
@@ -286,9 +276,7 @@ r_num=$(( $RANDOM % ($max - $min + 1) + $min ))
 echo "Random Number: $r_num"
 ```
 
-Bash
 
-Copy
 
 **Output:**
 
@@ -298,9 +286,7 @@ Enter maximum range:35
 Random Number: 24
 ```
 
-Bash
 
-Copy
 
 ### 13. Performing Mathematical Operations Without Storing
 
@@ -318,9 +304,7 @@ echo "Multiplication: $(($num1 * $num2))"
 echo "Division: $(($num1 / $num2))"
 ```
 
-Bash
 
-Copy
 
 **Output:**
 
@@ -333,9 +317,7 @@ Multiplication: 525
 Division: 2
 ```
 
-Bash
 
-Copy
 
 ### 14. Performs a Bitwise Operation Based on User Input
 
@@ -357,9 +339,7 @@ NOT) echo "Result: $num1 ^ $num2 = $((num1^num2))";;
 esac
 ```
 
-Bash
 
-Copy
 
 **Output:**
 
@@ -369,9 +349,7 @@ Enter operation to perform (AND, OR, NOT): AND
 Result: 4 & 5 = 4
 ```
 
-Bash
 
-Copy
 
 ### 15. Check If a Number is an Even or Odd
 
@@ -389,9 +367,7 @@ echo "The number is odd"
 fi
 ```
 
-Bash
 
-Copy
 
 **Output:**
 
@@ -400,9 +376,7 @@ Enter a number:25
 The number is odd
 ```
 
-Bash
 
-Copy
 
 ### 16. Perform an Arithmetic Operation Based on User Input
 
@@ -415,26 +389,20 @@ read -p "Enter a number:" num1
 read -p "Enter a smaller number:" num2
 read -p "Enter an operand:" op
 
-if [ $op == + ]
-then
+if [ "$op" == "+" ]; then
 echo "$num1 + $num2 = $((num1+num2))"
-elif [ $o == - ]
-then
+elif [ "$op" == "-" ]; then
 echo "$num1 - $num2 = $((num1-num2))"
-elif [ $op == * ]
-then
+elif [ "$op" == "*" ]; then
 echo "$num1 * $num2 = $((num1*num2))"
-elif [ $op == / ]
-then
+elif [ "$op" == "/" ]; then
 echo "$num1 / $num2 = $((num1/num2))"
 else
 echo "Operator not listed"
 fi
 ```
 
-Bash
 
-Copy
 
 **Output:**
 
@@ -445,9 +413,7 @@ Enter an operand:+
 34 + 14 = 48
 ```
 
-Bash
 
-Copy
 
 ### 17. Performs a Logical Operation Based on User Input
 
@@ -485,9 +451,7 @@ fi;;
 esac
 ```
 
-Bash
 
-Copy
 
 **Output:**
 
@@ -497,9 +461,7 @@ Enter an operation(and/or/not) to perform:or
 Result: true
 ```
 
-Bash
 
-Copy
 
 ### 18. Check If a Given Input is a Valid Email ID
 
