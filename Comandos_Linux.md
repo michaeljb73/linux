@@ -857,6 +857,36 @@ sudo journalctl -xeu tomcat.service
 ``````
 
 
+### 41. Configurando IP estático com o netplan - Ubuntu 24.04.2 LTS
+
+**Editar o arquivo de configuração:**
+
+```shell
+sudo nano /etc/netplan/99_config.yaml
+```
+
+```auto
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    eth0:
+      addresses:
+        - [seu ip estático]/24
+      routes:
+        - to: default
+          via: [seu gateway]
+      nameservers:
+          addresses: [ip dos dns's separados por virgula]
+```
+
+**Aplicar configurações:**
+
+```auto
+sudo netplan apply
+```
+
+
 
 # Instalações
 
