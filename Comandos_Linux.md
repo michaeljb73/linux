@@ -1541,7 +1541,7 @@ ssh username@domain
 
 # Comfigurações
 
-### Configurar o Google Colab
+### Configurar o Python no Google Colab
 
 Então vamos ao tutorial, primeiro execute o código abaixo, para verificar a versão do Python:
 
