@@ -886,8 +886,6 @@ network:
 sudo netplan apply
 ```
 
-
-
 # Instalações
 
 Antes de uma instalação execute uma atualização das listas de repositórios.
@@ -1539,3 +1537,45 @@ ssh username@domain
 ```
 
 > Important: To successfully connect to a remote server, SSH must be installed and configured on the remote server and the user's computer from which you make the connection. 
+
+
+# Comfigurações
+
+### Configurar o Google Colab
+
+Então vamos ao tutorial, primeiro execute o código abaixo, para verificar a versão do Python:
+
+```
+!python --versionCopiar código
+```
+
+Terá então o aparecimento da atual versão do Python no Colab. Digite e execute o código abaixo para alterar a versão:
+```
+!sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 8Copiar código
+```
+
+Agora configuramos a versão do Python, para isso executamos o código abaixo:
+```
+!sudo update-alternatives --config python3Copiar código
+```
+
+Vamos ter como retorno uma solicitação para digitar o número de seleção da versão desejada, nesse exemplo, você seleciona a que se refere a versão 3.6.8, como temos a opção auto mode e manual mode, selecione a opção auto mode.
+```
+There are 2 choices for the alternative python3 (providing /usr/bin/python3).
+
+  Selection    Path                Priority   Status
+------------------------------------------------------------
+* 0            /usr/bin/python3.6   8         auto mode
+  1            /usr/bin/python3.6   8         manual mode
+  2            /usr/bin/python3.7   2         manual mode
+
+Press <enter> to keep the current choice[*], or type selection number:Copiar código
+```
+Após isso, verifique novamente a versão do Python
+```
+!python --versionCopiar código
+```
+E instalamos o Python permanentemente na versão especificada no notebook do Colab.
+```
+!sudo apt install python3-pip
+```
